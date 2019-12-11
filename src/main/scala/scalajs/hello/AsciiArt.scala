@@ -2,7 +2,7 @@ package scalajs.hello
 
 object AsciiArt {
   val cat =
-"""
+    """
                          _
                         | \
                         | |

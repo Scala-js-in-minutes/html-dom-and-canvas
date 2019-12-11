@@ -8,7 +8,7 @@ class AsciiArtCanvas {
 
   def apply(): html.Canvas = element
 
-  def redraw(text: List[String]): Unit = {
+  def draw(text: List[String]): Unit = {
     val ctx = element.getContext("2d").asInstanceOf[CanvasRenderingContext2D]
     ctx.clearRect(0, 0, 400, 200)
 
