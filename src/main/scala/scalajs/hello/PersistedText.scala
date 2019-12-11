@@ -7,7 +7,7 @@ object PersistedText {
 }
 
 class PersistedText(localStorageKey: String, defaultValue: String) {
-  private var currentValue = Option(localStorage.getItem(localStorageKey)).getOrElse {
+  private var currentValue = load().getOrElse {
     save(defaultValue)
     defaultValue
   }
@@ -20,4 +20,8 @@ class PersistedText(localStorageKey: String, defaultValue: String) {
   }
 
   private def save(value: String): Unit = localStorage.setItem(localStorageKey, value)
+
+  private def load(): Option[String] = Option {
+    localStorage.getItem(localStorageKey)
+  }
 }
