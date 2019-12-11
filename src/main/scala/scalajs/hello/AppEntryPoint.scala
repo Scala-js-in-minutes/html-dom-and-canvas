@@ -6,11 +6,11 @@ import scalatags.JsDom.all._
 import scala.scalajs.js.Date
 
 object AppEntryPoint extends App {
-  val persistedAsciiArt = PersistedText("ascii-art", AsciiArt.cat)
+  val persistedAsciiArt = PersistedText("ascii-art", defaultValue = AsciiArt.cat)
   val canvas = new AsciiArtCanvas()
   val textArea = new AsciiArtTextArea(persistedAsciiArt(), text => canvas.draw(text))
+  val lastSavedTimestamp = span().render
 
-  val lastSavedTime = span().render
   val pageLayout = div(paddingLeft := 20,
     div(float.left, padding := 10,
       p("Ascii Art"),
@@ -20,7 +20,7 @@ object AppEntryPoint extends App {
       p("Image"),
       canvas()
     ),
-    div(span("Last saved: "), lastSavedTime, clear.both, fontSize := 12),
+    div(span("Last saved: "), lastSavedTimestamp, clear.both, fontSize := 12),
     a("Restore the original Ascii Art", href := "#", onclick := { e: Event => reset() }, fontSize := 12)
   )
 
@@ -32,7 +32,7 @@ object AppEntryPoint extends App {
 
   private def saveAsciiArt(): Unit = {
     persistedAsciiArt := textArea.rawText()
-    lastSavedTime.textContent = new Date().toUTCString()
+    lastSavedTimestamp.textContent = new Date().toUTCString()
   }
 
   private def reset(): Unit = {

@@ -6,4 +6,6 @@ Playing with HTML DOM &amp; Canvas
 - https://www.lihaoyi.com/scalatags/
 - http://www.lihaoyi.com/hands-on-scala-js/
 
-?? attach image
+TODO
+- attach image
+- add missing web browser tests
