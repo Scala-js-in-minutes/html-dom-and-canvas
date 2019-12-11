@@ -1,6 +1,6 @@
 package scalajs.hello
 
-trait AsciiArt {
+object AsciiArt {
   val cat =
 """
                          _

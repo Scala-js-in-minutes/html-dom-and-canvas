@@ -1,14 +1,17 @@
 package scalajs.hello
 
 import org.scalajs.dom._
-import scalatags.JsDom.all.{canvas, _}
+import scalatags.JsDom.all._
 
 import scala.scalajs.js.Date
 
-object AppEntryPoint extends App with AsciiArt {
-  val persistedAsciiArt = PersistedText("ascii-art", cat)
-  val canvasElement = canvas(id := "canvas", width := 200, height := 200).render
-  val textArea = textarea(persistedAsciiArt(), onkeyup := { _: Event => redraw() }, width := 400, height := 400).render
+object AppEntryPoint extends App {
+  val persistedAsciiArt = PersistedText("ascii-art", AsciiArt.cat)
+  val asciiArtCanvas = new AsciiArtCanvas()
+
+  def text: List[String] = textArea.value.split("\n").toList
+
+  val textArea = textarea(persistedAsciiArt(), onkeyup := { _: Event => asciiArtCanvas.redraw(text) }, width := 400, height := 400).render
   val lastSavedTime = span().render
   val pageLayout = div(paddingLeft := 20,
     div(float.left, padding := 10,
@@ -17,7 +20,7 @@ object AppEntryPoint extends App with AsciiArt {
     ),
     div(float.left, padding := 10,
       p("Image"),
-      canvasElement
+      asciiArtCanvas()
     ),
     div(span("Last saved: "), lastSavedTime, clear.both, fontSize := 12),
     a("Restore the original Ascii Art", href := "#", onclick := { e: Event => reset() }, fontSize := 12)
@@ -26,18 +29,7 @@ object AppEntryPoint extends App with AsciiArt {
   window.onload = { _: Event =>
     document.body.appendChild(pageLayout.render)
     window.setInterval(() => saveAsciiArt(), 500)
-    redraw()
-  }
-
-  private def redraw(): Unit = {
-    val lines = textArea.value.split("\n")
-    val ctx = canvasElement.getContext("2d").asInstanceOf[CanvasRenderingContext2D]
-    ctx.clearRect(0, 0, 400, 200)
-
-    for ((line, lineNumber) <- lines.zipWithIndex; (char, charNumber) <- line.zipWithIndex) {
-      ctx.fillStyle = if (char != ' ') "black" else "white"
-      ctx.fillRect(charNumber * 10, lineNumber * 10, 10, 10)
-    }
+    asciiArtCanvas.redraw(text)
   }
 
   private def saveAsciiArt(): Unit = {
@@ -46,7 +38,7 @@ object AppEntryPoint extends App with AsciiArt {
   }
 
   private def reset(): Unit = {
-    textArea.value = cat
-    redraw()
+    textArea.value = AsciiArt.cat
+    asciiArtCanvas.redraw(text)
   }
 }
